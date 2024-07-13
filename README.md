@@ -43,6 +43,12 @@ linker = "clang"
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
 ```
 
+## Contributors
+
+These are people and websites that helped me, in alphabetical order:
+
+- [https://www.rustacean.net/](https://www.rustacean.net/) for providing [ferris.png](ferris.png)
+
 ## Files used by continuous integration scripts
 
 Filename                                  |Descriptions

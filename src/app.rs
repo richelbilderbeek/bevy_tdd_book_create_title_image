@@ -1,7 +1,12 @@
 use bevy::prelude::*;
+use bevy_prototype_lyon::prelude::*;
 
 #[derive(Component)]
-pub struct Player;
+pub struct Ferris;
+
+#[derive(Component)]
+pub struct TddCircle;
+
 
 pub fn create_app() -> App {
     let mut app = App::new();
@@ -16,13 +21,16 @@ pub fn create_app() -> App {
         app.add_plugins(AssetPlugin::default());
         app.add_plugins(TaskPoolPlugin::default());
         app.init_asset::<bevy::render::texture::Image>();
-    }
 
-    let add_player_fn = move |/* no mut? */ commands: Commands,
+    }
+    //app.insert_resource(Msaa::Sample4);
+    app.add_plugins(ShapePlugin);
+
+    let add_ferris_fn = move |/* no mut? */ commands: Commands,
                               asset_server: Res<AssetServer>| {
-        add_player(commands, asset_server);
+        add_ferris(commands, asset_server);
     };
-    app.add_systems(Startup, (add_camera, add_player_fn));
+    app.add_systems(Startup, (add_camera, add_ferris_fn, add_tdd_circles));
     app.add_systems(Update, respond_to_keyboard);
 
     // Do not do update, as this will disallow to do more steps
@@ -36,14 +44,69 @@ fn add_camera(mut commands: Commands) {
     );
 }
 
-fn add_player(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn add_ferris(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         SpriteBundle {
+            transform: Transform {
+                translation: Vec3::new(0.0, 0.0, 1.0),
+                ..default()
+            },
             texture: asset_server.load("ferris.png"),
             ..default()
         },
-        Player,
+        Ferris,
     ));
+}
+
+fn add_tdd_circles(mut commands: Commands) {
+    let n_circles = 3;
+    let delta_angle = std::f32::consts::TAU / n_circles as f32;
+    let radius = 100.0;
+    let distance = 200.0;
+
+    for i in 0..n_circles {
+        let angle = i as f32 * delta_angle;
+        let x = f32::sin(angle) * distance;
+        let y = f32::cos(angle) * distance;
+        let color = Color::hsl(360. * i as f32 / n_circles as f32, 0.95, 0.7);
+        let shape = shapes::Circle {
+            radius,
+            ..default()
+        };
+        commands.spawn(
+            (
+            ShapeBundle {
+                path: GeometryBuilder::build_as(&shape),
+                spatial: SpatialBundle {
+                    transform: Transform::from_xyz(x, y, 0.0),
+                    ..default()
+                },
+                ..default()
+            },
+            Fill::color(color),
+            Stroke::new(Color::srgb(1.0, 1.0, 1.0), 10.0),
+            TddCircle
+          )
+        );
+
+        /*
+        commands.spawn((
+            SpriteBundle {
+                transform: Transform {
+                    translation: Vec3::new(x, y, 0.0),
+                    scale: Vec3::new(100.0, 100.0, 1.0),
+                    ..default()
+                },
+                sprite: Sprite {
+                     color,
+                    ..default()
+                },
+                ..default()
+            },
+            TddCircle,
+        ));
+        */
+    }
 }
 
 #[cfg(test)]
@@ -69,15 +132,15 @@ fn get_camera_zoom(app: &mut App) -> f32 {
 
 
 #[cfg(test)]
-fn get_player_position(app: &mut App) -> Vec2 {
-    let mut query = app.world_mut().query::<(&Transform, &Player)>();
+fn get_ferris_position(app: &mut App) -> Vec2 {
+    let mut query = app.world_mut().query::<(&Transform, &Ferris)>();
     let (transform, _) = query.single(app.world());
     transform.translation.xy()
 }
 
 #[cfg(test)]
-fn get_player_scale(app: &mut App) -> Vec2 {
-    let mut query = app.world_mut().query::<(&Transform, &Player)>();
+fn get_ferris_scale(app: &mut App) -> Vec2 {
+    let mut query = app.world_mut().query::<(&Transform, &Ferris)>();
     let (transform, _) = query.single(app.world());
     transform.scale.xy()
 }
@@ -144,17 +207,17 @@ mod tests {
     }
 
     #[test]
-    fn test_player_is_at_origin() {
+    fn test_ferris_is_at_origin() {
         let mut app = create_app();
         app.update();
-        assert_eq!(get_player_position(&mut app), Vec2::new(0.0, 0.0));
+        assert_eq!(get_ferris_position(&mut app), Vec2::new(0.0, 0.0));
     }
 
     #[test]
-    fn test_player_has_a_custom_scale() {
+    fn test_ferris_has_a_default_scale() {
         let mut app = create_app();
         app.update();
-        assert_eq!(get_player_scale(&mut app), Vec2::new(64.0, 32.0));
+        assert_eq!(get_ferris_scale(&mut app), Vec2::new(1.0, 1.0));
     }
 
     #[test]

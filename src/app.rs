@@ -9,9 +9,20 @@ pub fn create_app() -> App {
     // Only add this plugin in testing.
     // The main app will assume it to be absent
     if cfg!(test) {
+        // Keyboard input
         app.add_plugins(bevy::input::InputPlugin);
+
+        // Assets
+        app.add_plugins(AssetPlugin::default());
+        app.add_plugins(TaskPoolPlugin::default());
+        app.init_asset::<bevy::render::texture::Image>();
     }
-    app.add_systems(Startup, (add_camera, add_player));
+
+    let add_player_fn = move |/* no mut? */ commands: Commands,
+                              asset_server: Res<AssetServer>| {
+        add_player(commands, asset_server);
+    };
+    app.add_systems(Startup, (add_camera, add_player_fn));
     app.add_systems(Update, respond_to_keyboard);
 
     // Do not do update, as this will disallow to do more steps
@@ -25,13 +36,10 @@ fn add_camera(mut commands: Commands) {
     );
 }
 
-fn add_player(mut commands: Commands) {
+fn add_player(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         SpriteBundle {
-            transform: Transform {
-                scale: Vec3::new(64.0, 32.0, 1.0),
-                ..default()
-            },
+            texture: asset_server.load("ferris.png"),
             ..default()
         },
         Player,

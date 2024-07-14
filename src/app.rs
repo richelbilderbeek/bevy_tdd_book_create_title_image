@@ -94,7 +94,7 @@ fn add_tdd_circles(mut commands: Commands) {
             SpriteBundle {
                 transform: Transform {
                     translation: Vec3::new(x, y, 0.0),
-                    scale: Vec3::new(100.0, 100.0, 1.0),
+                    size: Vec3::new(100.0, 100.0, 1.0),
                     ..default()
                 },
                 sprite: Sprite {
@@ -127,7 +127,7 @@ fn get_camera_rotation(app: &mut App) -> f32 {
 fn get_camera_zoom(app: &mut App) -> f32 {
     let mut query = app.world_mut().query::<(&OrthographicProjection, &Camera)>();
     let (projection, _) = query.single(app.world());
-    projection.scale
+    projection.size
 }
 
 
@@ -139,10 +139,10 @@ fn get_ferris_position(app: &mut App) -> Vec2 {
 }
 
 #[cfg(test)]
-fn get_ferris_scale(app: &mut App) -> Vec2 {
+fn get_ferris_size(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Ferris)>();
     let (transform, _) = query.single(app.world());
-    transform.scale.xy()
+    transform.size.xy()
 }
 
 #[cfg(test)]
@@ -176,10 +176,10 @@ fn respond_to_keyboard(
         transform.rotate_z(0.1);
     }
     if input.pressed(KeyCode::KeyW) {
-        projection.scale /= 1.1
+        projection.size /= 1.1
     }
     if input.pressed(KeyCode::KeyS) {
-        projection.scale *= 1.1
+        projection.size *= 1.1
     }
 }
 
@@ -214,10 +214,10 @@ mod tests {
     }
 
     #[test]
-    fn test_ferris_has_a_default_scale() {
+    fn test_ferris_has_a_default_size() {
         let mut app = create_app();
         app.update();
-        assert_eq!(get_ferris_scale(&mut app), Vec2::new(1.0, 1.0));
+        assert_eq!(get_ferris_size(&mut app), Vec2::new(1.0, 1.0));
     }
 
     #[test]

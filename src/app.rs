@@ -142,7 +142,7 @@ fn get_ferris_position(app: &mut App) -> Vec2 {
 fn get_ferris_size(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Ferris)>();
     let (transform, _) = query.single(app.world());
-    transform.size.xy()
+    transform.scale.xy()
 }
 
 #[cfg(test)]

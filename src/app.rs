@@ -94,7 +94,7 @@ fn add_tdd_circles(mut commands: Commands) {
             SpriteBundle {
                 transform: Transform {
                     translation: Vec3::new(x, y, 0.0),
-                    size: Vec3::new(100.0, 100.0, 1.0),
+                    scale: Vec3::new(100.0, 100.0, 1.0),
                     ..default()
                 },
                 sprite: Sprite {

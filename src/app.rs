@@ -24,7 +24,7 @@ pub fn create_app() -> App {
 
     }
     //app.insert_resource(Msaa::Sample4);
-    app.add_plugins(ShapePlugin);
+    //app.add_plugins(ShapePlugin); PANICS
 
     let add_ferris_fn = move |/* no mut? */ commands: Commands,
                               asset_server: Res<AssetServer>| {
@@ -58,21 +58,34 @@ fn add_ferris(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
-fn add_tdd_circles(mut commands: Commands) {
+fn add_tdd_circles(mut commands: Commands, asset_server: Res<AssetServer>) {
     let n_circles = 3;
     let delta_angle = std::f32::consts::TAU / n_circles as f32;
     let radius = 100.0;
-    let distance = 200.0;
 
     for i in 0..n_circles {
         let angle = i as f32 * delta_angle;
-        let x = f32::sin(angle) * distance;
-        let y = f32::cos(angle) * distance;
+        let x = f32::sin(angle) * radius;
+        let y = f32::cos(angle) * radius;
         let color = Color::hsl(360. * i as f32 / n_circles as f32, 0.95, 0.7);
+        /*
         let shape = shapes::Circle {
             radius,
             ..default()
         };
+        */
+        commands.spawn((
+            SpriteBundle {
+                transform: Transform {
+                    translation: Vec3::new(x, y, 0.0),
+                    ..default()
+                },
+                texture: asset_server.load("ferris.png"),
+                ..default()
+            },
+            TddCircle,
+        ));
+/*
         commands.spawn(
             (
             ShapeBundle {
@@ -88,7 +101,7 @@ fn add_tdd_circles(mut commands: Commands) {
             TddCircle
           )
         );
-
+*/
         /*
         commands.spawn((
             SpriteBundle {
@@ -176,10 +189,10 @@ fn respond_to_keyboard(
         transform.rotate_z(0.1);
     }
     if input.pressed(KeyCode::KeyW) {
-        projection.size /= 1.1
+        projection.scale /= 1.1;
     }
     if input.pressed(KeyCode::KeyS) {
-        projection.size *= 1.1
+        projection.scale *= 1.1;
     }
 }
 

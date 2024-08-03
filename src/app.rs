@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude::*;
 
 #[derive(Component)]
 pub struct Ferris;
@@ -58,6 +57,15 @@ fn add_ferris(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
+fn index_to_filename(i: i32) -> String {
+    assert!(i >= 0 && i <= 2);
+    match i {
+        0 => String::from("red_circle.png"),
+        1 => String::from("green_circle.png"),
+        _ => String::from("blue_circle.png"),
+    }
+}
+
 fn add_tdd_circles(mut commands: Commands, asset_server: Res<AssetServer>) {
     let n_circles = 3;
     let delta_angle = std::f32::consts::TAU / n_circles as f32;
@@ -67,20 +75,15 @@ fn add_tdd_circles(mut commands: Commands, asset_server: Res<AssetServer>) {
         let angle = i as f32 * delta_angle;
         let x = f32::sin(angle) * radius;
         let y = f32::cos(angle) * radius;
-        let color = Color::hsl(360. * i as f32 / n_circles as f32, 0.95, 0.7);
-        /*
-        let shape = shapes::Circle {
-            radius,
-            ..default()
-        };
-        */
+        let filename = index_to_filename(i);
+        //assert!(asset_server.load(filename).is_strong());
         commands.spawn((
             SpriteBundle {
                 transform: Transform {
-                    translation: Vec3::new(x, y, 0.0),
+                    translation: Vec3::new(x, y, 1.0),
                     ..default()
                 },
-                texture: asset_server.load("ferris.png"),
+                texture: asset_server.load(filename),
                 ..default()
             },
             TddCircle,
@@ -367,6 +370,12 @@ mod tests {
         app.update();
 
         assert!(get_camera_zoom(&mut app) > 1.0);
+    }
+    #[test]
+    fn test_index_to_filename() {
+        assert_ne!(index_to_filename(0), index_to_filename(1));
+        assert_ne!(index_to_filename(0), index_to_filename(2));
+        assert_ne!(index_to_filename(1), index_to_filename(2));
     }
 
 }

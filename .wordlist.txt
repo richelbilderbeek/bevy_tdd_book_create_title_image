@@ -14,3 +14,7 @@ txt
 wordlist
 yml
 codecov
+ferris
+png
+rustacean
+www

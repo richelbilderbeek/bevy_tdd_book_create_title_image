@@ -50,7 +50,7 @@ fn add_camera(mut commands: Commands) {
 
 fn add_ferris(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
-        SpriteBundle {
+        Sprite {
             transform: Transform {
                 translation: Vec3::new(0.0, 0.0, 1.0),
                 ..default()
@@ -83,7 +83,7 @@ fn add_tdd_circles(mut commands: Commands, asset_server: Res<AssetServer>) {
         let filename = index_to_filename(i);
         //assert!(asset_server.load(filename).is_strong());
         commands.spawn((
-            SpriteBundle {
+            Sprite {
                 transform: Transform {
                     translation: Vec3::new(x, y, 1.0),
                     ..default()
@@ -112,7 +112,7 @@ fn add_tdd_circles(mut commands: Commands, asset_server: Res<AssetServer>) {
 */
         /*
         commands.spawn((
-            SpriteBundle {
+            Sprite {
                 transform: Transform {
                     translation: Vec3::new(x, y, 0.0),
                     scale: Vec3::new(100.0, 100.0, 1.0),

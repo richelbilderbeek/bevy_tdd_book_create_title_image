@@ -44,7 +44,7 @@ pub fn create_app() -> App {
 
 fn add_camera(mut commands: Commands) {
     commands.spawn(
-        Camera2dBundle::default()
+        Camera2d::default()
     );
 }
 

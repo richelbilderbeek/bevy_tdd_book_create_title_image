@@ -44,7 +44,7 @@ pub fn create_app() -> App {
 
 fn add_camera(mut commands: Commands) {
     commands.spawn(
-        Camera2d::default()
+        Camera2d
     );
 }
 
@@ -60,7 +60,7 @@ fn add_ferris(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 fn index_to_filename(i: i32) -> String {
-    assert!(i >= 0 && i <= 2);
+    assert!((0..=2).contains(&i));
     match i {
         0 => String::from("red_circle.png"),
         1 => String::from("green_circle.png"),

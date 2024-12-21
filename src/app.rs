@@ -24,7 +24,7 @@ pub fn create_app() -> App {
         // Assets
         app.add_plugins(AssetPlugin::default());
         app.add_plugins(TaskPoolPlugin::default());
-        app.init_asset::<bevy::render::texture::Image>();
+        app.init_asset::<bevy::image::Image>();
 
     }
     //app.insert_resource(Msaa::Sample4);
@@ -50,12 +50,9 @@ fn add_camera(mut commands: Commands) {
 
 fn add_ferris(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
-        Sprite {
-            transform: Transform {
-                translation: Vec3::new(0.0, 0.0, 1.0),
-                ..default()
-            },
-            texture: asset_server.load("ferris.png"),
+        Sprite::from_image(asset_server.load("ferris.png")),
+        Transform {
+            translation: Vec3::new(0.0, 0.0, 1.0),
             ..default()
         },
         Ferris,
@@ -83,12 +80,9 @@ fn add_tdd_circles(mut commands: Commands, asset_server: Res<AssetServer>) {
         let filename = index_to_filename(i);
         //assert!(asset_server.load(filename).is_strong());
         commands.spawn((
-            Sprite {
-                transform: Transform {
-                    translation: Vec3::new(x, y, 1.0),
-                    ..default()
-                },
-                texture: asset_server.load(filename),
+            Sprite::from_image(asset_server.load(&filename)),
+            Transform {
+                translation: Vec3::new(x, y, 1.0),
                 ..default()
             },
             TddCircle,
@@ -148,7 +142,7 @@ fn get_camera_rotation(app: &mut App) -> f32 {
 fn get_camera_zoom(app: &mut App) -> f32 {
     let mut query = app.world_mut().query::<(&OrthographicProjection, &Camera)>();
     let (projection, _) = query.single(app.world());
-    projection.size
+    projection.scale
 }
 
 

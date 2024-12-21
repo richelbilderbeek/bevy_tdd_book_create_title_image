@@ -10,7 +10,13 @@
 
 Chapter of [https://github.com/richelbilderbeek/bevy_tdd_book](https://github.com/richelbilderbeek/bevy_tdd_book)
 
+```text
+
+TODO: 
+
 ![Screenshot of this application](create_title_image.png)
+
+```
 
 ## Setup
 
@@ -47,7 +53,7 @@ rustflags = ["-C", "link-arg=-fuse-ld=lld"]
 
 These are people and websites that helped me, in alphabetical order:
 
-- [https://www.rustacean.net/](https://www.rustacean.net/) for providing [ferris.png](ferris.png)
+- [https://www.rustacean.net/](https://www.rustacean.net/) for providing [ferris.png](assets/ferris.png)
 
 ## Files used by continuous integration scripts
 
